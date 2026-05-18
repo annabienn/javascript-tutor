@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+learning_progress.sqlite3
+
+docs/*.aux
+docs/*.log
+docs/*.out
+docs/*.toc
+
+.DS_Store
+Thumbs.db
+
