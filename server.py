@@ -248,6 +248,12 @@ class AppHandler(SimpleHTTPRequestHandler):
         ".js": "application/javascript; charset=utf-8",
     }
 
+    def end_headers(self):
+        if not self.path.startswith("/api/"):
+            self.send_header("Cache-Control", "no-store, no-cache, must-revalidate")
+            self.send_header("Pragma", "no-cache")
+        super().end_headers()
+
     def translate_path(self, path):
         parsed = urlparse(path)
         clean = parsed.path.lstrip("/") or "index.html"
