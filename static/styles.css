@@ -23,6 +23,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   min-height: 100%;
 }
@@ -230,6 +234,50 @@ textarea {
   min-width: min(100%, 430px);
 }
 
+.auth-page {
+  display: grid;
+  width: min(1220px, calc(100% - 40px));
+  margin: 24px auto 44px;
+  gap: 22px;
+}
+
+.auth-page > .brand {
+  width: fit-content;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(248, 252, 255, 0.84));
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(12px);
+}
+
+.auth-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+  gap: 24px;
+  align-items: start;
+  padding: 28px;
+  border: 1px solid rgba(217, 226, 236, 0.92);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(246, 252, 255, 0.92));
+  box-shadow: var(--shadow);
+  animation: riseIn 0.45s ease both;
+  backdrop-filter: blur(12px);
+}
+
+.auth-intro h2 {
+  max-width: 720px;
+  margin-bottom: 12px;
+  font-size: 36px;
+  line-height: 1.1;
+}
+
+.auth-intro p {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 17px;
+}
+
 .auth-actions,
 .auth-user {
   display: flex;
@@ -237,6 +285,11 @@ textarea {
   justify-content: flex-end;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.auth-entry .auth-actions {
+  grid-column: 1;
+  justify-content: flex-start;
 }
 
 .ghost-button {
@@ -283,6 +336,19 @@ textarea {
   gap: 12px;
   animation: menuDrop 0.22s ease both;
   backdrop-filter: blur(14px);
+}
+
+.auth-panel-page {
+  position: static;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 100%;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.14);
+}
+
+.auth-preview {
+  display: grid;
+  gap: 14px;
 }
 
 .auth-panel[hidden],
@@ -1217,8 +1283,15 @@ pre {
   }
 
   .landing-hero,
+  .auth-entry,
   .landing-preview {
     grid-template-columns: 1fr;
+  }
+
+  .auth-panel-page,
+  .auth-entry .auth-actions {
+    grid-column: auto;
+    grid-row: auto;
   }
 
   .preview-head {
@@ -1260,6 +1333,7 @@ pre {
 
 @media (max-width: 560px) {
   .topbar,
+  .auth-page,
   .landing,
   .layout {
     width: min(100% - 20px, 760px);

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <header class="topbar">
+    <section id="auth-page" class="auth-page">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">JS</div>
         <div>
@@ -16,22 +16,25 @@
         </div>
       </div>
 
-      <div class="auth-shell">
+      <div class="auth-entry">
+        <div class="auth-intro">
+          <p class="section-kicker">JavaScript Learning Platform</p>
+          <h2>Μπες στον προσωπικό σου χώρο μάθησης</h2>
+          <p>
+            Δημιούργησε λογαριασμό ή κάνε είσοδο για να ξεκλειδώσεις τα quiz,
+            τις δραστηριότητες και την καταγραφή της προόδου σου.
+          </p>
+        </div>
+
         <div id="auth-actions" class="auth-actions">
           <button id="login-open" type="button" class="ghost-button" onclick="window.showAuthFallback && window.showAuthFallback('login')">Είσοδος</button>
           <button id="register-open" type="button" onclick="window.showAuthFallback && window.showAuthFallback('register')">Εγγραφή</button>
         </div>
 
-        <div id="auth-user" class="auth-user" hidden>
-          <span id="auth-user-label"></span>
-          <button id="logout-btn" type="button" class="ghost-button">Αποσύνδεση</button>
-        </div>
-
-        <form id="user-form" class="auth-panel" hidden>
+        <form id="user-form" class="auth-panel auth-panel-page">
           <input id="auth-mode-input" type="hidden" value="login">
           <div class="auth-panel-head">
             <strong id="auth-title">Είσοδος</strong>
-            <button id="auth-close" type="button" class="icon-button" aria-label="Κλείσιμο" onclick="document.getElementById('user-form').hidden = true">×</button>
           </div>
           <label id="name-field" class="auth-field" for="name-input">
             <span>Όνομα</span>
@@ -49,42 +52,33 @@
           <p id="auth-message" class="auth-message" aria-live="polite"></p>
         </form>
       </div>
-    </header>
 
-    <section id="landing" class="landing">
-      <div class="landing-hero">
-        <div class="landing-copy">
-          <p class="section-kicker">JavaScript Learning Platform</p>
-          <h2>Μάθε JavaScript βήμα προς βήμα, με θεωρία, ασκήσεις και προσωπική πρόοδο.</h2>
-          <p>
-            Η εφαρμογή οργανώνει το υλικό σε ενότητες, καταγράφει τις απαντήσεις σου
-            και προσαρμόζει τη μαθησιακή διαδρομή ανάλογα με την επίδοσή σου.
-          </p>
-          <div class="landing-actions">
-            <button type="button" onclick="window.showAuthFallback && window.showAuthFallback('register')">Ξεκίνα με εγγραφή</button>
-            <button type="button" class="ghost-button" onclick="window.showAuthFallback && window.showAuthFallback('login')">Έχω ήδη λογαριασμό</button>
+      <div class="auth-preview">
+        <div class="preview-head">
+          <div>
+            <p class="section-kicker">Preview μαθημάτων</p>
+            <h2>Τι περιλαμβάνει το μάθημα</h2>
           </div>
+          <span>Η πλήρης πρόσβαση ενεργοποιείται μετά την είσοδο ή την εγγραφή.</span>
         </div>
-        <div class="landing-panel">
-          <strong>Τι θα ξεκλειδώσεις με σύνδεση</strong>
-          <ul>
-            <li>Quiz αυτοαξιολόγησης για κάθε ενότητα</li>
-            <li>Καταγραφή απαντήσεων και λαθών</li>
-            <li>Στατιστικά προόδου ανά μαθητή</li>
-            <li>Προσαρμοσμένες προτάσεις επανάληψης</li>
-          </ul>
+        <div id="landing-preview" class="landing-preview"></div>
+      </div>
+    </section>
+
+    <header id="app-topbar" class="topbar" hidden>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">JS</div>
+        <div>
+          <p class="eyebrow">Εκπαιδευτικό Λογισμικό</p>
+          <h1>JavaScript Tutor</h1>
         </div>
       </div>
 
-      <div class="preview-head">
-        <div>
-          <p class="section-kicker">Preview μαθημάτων</p>
-          <h2>Περιεχόμενο που μπορείς να εξερευνήσεις</h2>
-        </div>
-        <span>Τα τεστ και οι δραστηριότητες ενεργοποιούνται μετά τη σύνδεση.</span>
+      <div id="auth-user" class="auth-user" hidden>
+        <span id="auth-user-label"></span>
+        <button id="logout-btn" type="button" class="ghost-button">Αποσύνδεση</button>
       </div>
-      <div id="landing-preview" class="landing-preview"></div>
-    </section>
+    </header>
 
     <main id="app-layout" class="layout" hidden>
       <aside class="sidebar">

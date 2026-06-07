@@ -23,8 +23,9 @@ const el = {
   nameInput: document.querySelector("#name-input"),
   emailInput: document.querySelector("#email-input"),
   passwordInput: document.querySelector("#password-input"),
-  landing: document.querySelector("#landing"),
+  authPage: document.querySelector("#auth-page"),
   landingPreview: document.querySelector("#landing-preview"),
+  appTopbar: document.querySelector("#app-topbar"),
   appLayout: document.querySelector("#app-layout"),
   loginOpen: document.querySelector("#login-open"),
   registerOpen: document.querySelector("#register-open"),
@@ -33,7 +34,6 @@ const el = {
   authUserLabel: document.querySelector("#auth-user-label"),
   logoutBtn: document.querySelector("#logout-btn"),
   authTitle: document.querySelector("#auth-title"),
-  authClose: document.querySelector("#auth-close"),
   authSubmit: document.querySelector("#auth-submit"),
   authMessage: document.querySelector("#auth-message"),
   authModeInput: document.querySelector("#auth-mode-input"),
@@ -97,7 +97,8 @@ function renderAuthState() {
   const loggedIn = Boolean(state.user);
   el.authActions.hidden = loggedIn;
   el.authUser.hidden = !loggedIn;
-  el.landing.hidden = loggedIn;
+  el.authPage.hidden = loggedIn;
+  el.appTopbar.hidden = !loggedIn;
   el.appLayout.hidden = !loggedIn;
   if (loggedIn) {
     const email = state.user.email ? ` · ${state.user.email}` : "";
@@ -106,6 +107,8 @@ function renderAuthState() {
     return;
   }
   el.authUserLabel.textContent = "";
+  el.userForm.hidden = false;
+  openAuth("login");
 }
 
 function renderLandingPreview() {
@@ -503,7 +506,6 @@ document.addEventListener("click", (event) => {
     openAuth("register");
   }
 });
-el.authClose.addEventListener("click", closeAuth);
 
 el.logoutBtn.addEventListener("click", async () => {
   await saveVisit();
