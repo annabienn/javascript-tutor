@@ -51,7 +51,42 @@
       </div>
     </header>
 
-    <main class="layout">
+    <section id="landing" class="landing">
+      <div class="landing-hero">
+        <div class="landing-copy">
+          <p class="section-kicker">JavaScript Learning Platform</p>
+          <h2>Μάθε JavaScript βήμα προς βήμα, με θεωρία, ασκήσεις και προσωπική πρόοδο.</h2>
+          <p>
+            Η εφαρμογή οργανώνει το υλικό σε ενότητες, καταγράφει τις απαντήσεις σου
+            και προσαρμόζει τη μαθησιακή διαδρομή ανάλογα με την επίδοσή σου.
+          </p>
+          <div class="landing-actions">
+            <button type="button" onclick="window.showAuthFallback && window.showAuthFallback('register')">Ξεκίνα με εγγραφή</button>
+            <button type="button" class="ghost-button" onclick="window.showAuthFallback && window.showAuthFallback('login')">Έχω ήδη λογαριασμό</button>
+          </div>
+        </div>
+        <div class="landing-panel">
+          <strong>Τι θα ξεκλειδώσεις με σύνδεση</strong>
+          <ul>
+            <li>Quiz αυτοαξιολόγησης για κάθε ενότητα</li>
+            <li>Καταγραφή απαντήσεων και λαθών</li>
+            <li>Στατιστικά προόδου ανά μαθητή</li>
+            <li>Προσαρμοσμένες προτάσεις επανάληψης</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="preview-head">
+        <div>
+          <p class="section-kicker">Preview μαθημάτων</p>
+          <h2>Περιεχόμενο που μπορείς να εξερευνήσεις</h2>
+        </div>
+        <span>Τα τεστ και οι δραστηριότητες ενεργοποιούνται μετά τη σύνδεση.</span>
+      </div>
+      <div id="landing-preview" class="landing-preview"></div>
+    </section>
+
+    <main id="app-layout" class="layout" hidden>
       <aside class="sidebar">
         <section class="panel path-panel">
           <div class="panel-title">

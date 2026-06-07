@@ -23,6 +23,9 @@ const el = {
   nameInput: document.querySelector("#name-input"),
   emailInput: document.querySelector("#email-input"),
   passwordInput: document.querySelector("#password-input"),
+  landing: document.querySelector("#landing"),
+  landingPreview: document.querySelector("#landing-preview"),
+  appLayout: document.querySelector("#app-layout"),
   loginOpen: document.querySelector("#login-open"),
   registerOpen: document.querySelector("#register-open"),
   authActions: document.querySelector("#auth-actions"),
@@ -94,6 +97,8 @@ function renderAuthState() {
   const loggedIn = Boolean(state.user);
   el.authActions.hidden = loggedIn;
   el.authUser.hidden = !loggedIn;
+  el.landing.hidden = loggedIn;
+  el.appLayout.hidden = !loggedIn;
   if (loggedIn) {
     const email = state.user.email ? ` · ${state.user.email}` : "";
     el.authUserLabel.textContent = `Συνδεδεμένος: ${state.user.name}${email}`;
@@ -101,6 +106,25 @@ function renderAuthState() {
     return;
   }
   el.authUserLabel.textContent = "";
+}
+
+function renderLandingPreview() {
+  el.landingPreview.innerHTML = state.modules
+    .map(
+      (module, index) => `
+        <article class="preview-card">
+          <span>${String(index + 1).padStart(2, "0")}</span>
+          <h3>${module.title}</h3>
+          <p>${module.goal}</p>
+          <div>
+            <small>${module.level}</small>
+            <small>${module.estimated_minutes}'</small>
+            <small>${(module.activities || []).length} δραστηριότητες</small>
+          </div>
+        </article>
+      `,
+    )
+    .join("");
 }
 
 function moduleStatus(moduleId) {
@@ -112,6 +136,7 @@ async function loadContent() {
   const data = await api(`/api/content${userParam}`);
   state.modules = data.modules;
   state.adaptivePath = data.adaptive_path;
+  renderLandingPreview();
   renderModuleSelect();
   renderLesson();
   await loadQuiz("module");
@@ -196,11 +221,17 @@ function renderLesson() {
         <div class="activity" data-title="${escapeHtml(activity.title)}">
           <h4>${activity.title}</h4>
           <p>${activity.task}</p>
-          <textarea class="activity-answer" rows="4" placeholder="Γράψε εδώ την απάντησή σου"></textarea>
-          <div class="activity-actions">
-            <button type="button" class="activity-check" data-terms="${escapeHtml(encodeURIComponent(JSON.stringify(activity.checks || [])))}">Έλεγχος</button>
-            <span class="activity-feedback" aria-live="polite"></span>
-          </div>
+          ${
+            state.user
+              ? `
+                <textarea class="activity-answer" rows="4" placeholder="Γράψε εδώ την απάντησή σου"></textarea>
+                <div class="activity-actions">
+                  <button type="button" class="activity-check" data-terms="${escapeHtml(encodeURIComponent(JSON.stringify(activity.checks || [])))}">Έλεγχος</button>
+                  <span class="activity-feedback" aria-live="polite"></span>
+                </div>
+              `
+              : `<p class="locked-note">Συνδέσου ή κάνε εγγραφή για να υποβάλεις απάντηση και να καταγραφεί η πρόοδός σου.</p>`
+          }
           <details>
             <summary>Ενδεικτική λύση</summary>
             <pre><code>${escapeHtml(activity.solution)}</code></pre>
@@ -259,6 +290,18 @@ function renderLesson() {
 async function loadQuiz(type) {
   state.activeQuizType = type;
   state.quizStartedAt = Date.now();
+  if (!state.user) {
+    el.quizTitle.textContent = type === "review" ? "Επαναληπτικό Quiz" : "Quiz ενότητας";
+    el.quizResult.innerHTML = "";
+    el.quizForm.innerHTML = `
+      <div class="quiz-locked">
+        <h3>Το quiz είναι διαθέσιμο μετά τη σύνδεση</h3>
+        <p>Κάνε είσοδο ή εγγραφή για να απαντήσεις, να αποθηκευτούν οι επιλογές σου και να ενημερωθούν τα στατιστικά προόδου.</p>
+        <button type="button" onclick="window.showAuthFallback && window.showAuthFallback('login')">Είσοδος</button>
+      </div>
+    `;
+    return;
+  }
   const id = type === "review" ? "review" : state.activeModuleId;
   const data = await api(`/api/quiz/${id}`);
   el.quizTitle.textContent = type === "review" ? "Επαναληπτικό Quiz" : "Quiz ενότητας";
