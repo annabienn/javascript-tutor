@@ -291,6 +291,7 @@ class AppHandler(SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
         if parsed.path == "/api/users":
             payload = read_json(self)
+            mode = (payload.get("mode") or "register").strip().lower()
             name = (payload.get("name") or "Μαθητής").strip()
             email = (payload.get("email") or "").strip().lower() or None
             with db() as conn:
@@ -302,6 +303,12 @@ class AppHandler(SimpleHTTPRequestHandler):
                     if existing:
                         json_response(self, dict(existing))
                         return
+                if mode == "login":
+                    json_response(self, {"error": "User not found"}, 404)
+                    return
+                if mode == "register" and not email:
+                    json_response(self, {"error": "Email is required"}, 400)
+                    return
                 cur = conn.execute(
                     "INSERT INTO users(name, email, created_at) VALUES (?, ?, ?)",
                     (name, email, int(time.time())),

@@ -5,12 +5,24 @@ let state = {
   activeModuleId: "intro",
   activeQuizType: "module",
   quizStartedAt: Date.now(),
+  authMode: "login",
 };
 
 const el = {
   userForm: document.querySelector("#user-form"),
   nameInput: document.querySelector("#name-input"),
   emailInput: document.querySelector("#email-input"),
+  loginOpen: document.querySelector("#login-open"),
+  registerOpen: document.querySelector("#register-open"),
+  authActions: document.querySelector("#auth-actions"),
+  authUser: document.querySelector("#auth-user"),
+  authUserLabel: document.querySelector("#auth-user-label"),
+  logoutBtn: document.querySelector("#logout-btn"),
+  authTitle: document.querySelector("#auth-title"),
+  authClose: document.querySelector("#auth-close"),
+  authSubmit: document.querySelector("#auth-submit"),
+  authMessage: document.querySelector("#auth-message"),
+  nameField: document.querySelector("#name-field"),
   moduleSelect: document.querySelector("#module-select"),
   moduleSummary: document.querySelector("#module-summary"),
   lesson: document.querySelector("#lesson"),
@@ -34,9 +46,45 @@ async function api(path, options = {}) {
     ...options,
   });
   if (!response.ok) {
-    throw new Error(`Request failed: ${response.status}`);
+    const message = await response.text();
+    const error = new Error(message || `Request failed: ${response.status}`);
+    error.status = response.status;
+    throw error;
   }
   return response.json();
+}
+
+function openAuth(mode) {
+  state.authMode = mode;
+  el.userForm.hidden = false;
+  el.authMessage.textContent = "";
+  el.authTitle.textContent = mode === "register" ? "Εγγραφή μαθητή" : "Είσοδος μαθητή";
+  el.authSubmit.textContent = mode === "register" ? "Δημιουργία λογαριασμού" : "Σύνδεση";
+  el.nameField.hidden = mode !== "register";
+  el.nameInput.required = mode === "register";
+  if (mode === "register") {
+    el.nameInput.focus();
+  } else {
+    el.emailInput.focus();
+  }
+}
+
+function closeAuth() {
+  el.userForm.hidden = true;
+  el.authMessage.textContent = "";
+}
+
+function renderAuthState() {
+  const loggedIn = Boolean(state.user);
+  el.authActions.hidden = loggedIn;
+  el.authUser.hidden = !loggedIn;
+  if (loggedIn) {
+    const email = state.user.email ? ` · ${state.user.email}` : "";
+    el.authUserLabel.textContent = `Συνδεδεμένος: ${state.user.name}${email}`;
+    closeAuth();
+    return;
+  }
+  el.authUserLabel.textContent = "";
 }
 
 function moduleStatus(moduleId) {
@@ -361,13 +409,34 @@ function escapeHtml(value) {
 
 el.userForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  el.authMessage.textContent = "";
   const name = el.nameInput.value.trim() || "Μαθητής";
   const email = el.emailInput.value.trim();
-  state.user = await api("/api/users", {
-    method: "POST",
-    body: JSON.stringify({ name, email }),
-  });
-  localStorage.setItem("jsTutorUser", JSON.stringify(state.user));
+  try {
+    state.user = await api("/api/users", {
+      method: "POST",
+      body: JSON.stringify({ mode: state.authMode, name, email }),
+    });
+    localStorage.setItem("jsTutorUser", JSON.stringify(state.user));
+    renderAuthState();
+    await loadContent();
+  } catch (error) {
+    el.authMessage.textContent =
+      state.authMode === "login" && error.status === 404
+        ? "Δεν βρέθηκε χρήστης με αυτό το email. Κάνε πρώτα εγγραφή."
+        : "Δεν ολοκληρώθηκε η σύνδεση. Έλεγξε τα στοιχεία και δοκίμασε ξανά.";
+  }
+});
+
+el.loginOpen.addEventListener("click", () => openAuth("login"));
+el.registerOpen.addEventListener("click", () => openAuth("register"));
+el.authClose.addEventListener("click", closeAuth);
+
+el.logoutBtn.addEventListener("click", async () => {
+  await saveVisit();
+  localStorage.removeItem("jsTutorUser");
+  state.user = null;
+  renderAuthState();
   await loadContent();
 });
 
@@ -470,6 +539,8 @@ if (state.user) {
   el.nameInput.value = state.user.name;
   el.emailInput.value = state.user.email || "";
 }
+
+renderAuthState();
 
 loadContent().catch((error) => {
   el.lesson.innerHTML = `<p>Σφάλμα φόρτωσης: ${error.message}</p>`;

@@ -16,13 +16,34 @@
         </div>
       </div>
 
-      <form id="user-form" class="user-form">
-        <label class="sr-only" for="name-input">Όνομα μαθητή</label>
-        <input id="name-input" type="text" maxlength="40" placeholder="Όνομα μαθητή" aria-label="Όνομα μαθητή">
-        <label class="sr-only" for="email-input">Email μαθητή</label>
-        <input id="email-input" type="email" maxlength="80" placeholder="Email για σύνδεση" aria-label="Email μαθητή">
-        <button type="submit">Έναρξη</button>
-      </form>
+      <div class="auth-shell">
+        <div id="auth-actions" class="auth-actions">
+          <button id="login-open" type="button" class="ghost-button">Είσοδος</button>
+          <button id="register-open" type="button">Εγγραφή</button>
+        </div>
+
+        <div id="auth-user" class="auth-user" hidden>
+          <span id="auth-user-label"></span>
+          <button id="logout-btn" type="button" class="ghost-button">Αποσύνδεση</button>
+        </div>
+
+        <form id="user-form" class="auth-panel" hidden>
+          <div class="auth-panel-head">
+            <strong id="auth-title">Είσοδος</strong>
+            <button id="auth-close" type="button" class="icon-button" aria-label="Κλείσιμο">×</button>
+          </div>
+          <label id="name-field" class="auth-field" for="name-input">
+            <span>Όνομα</span>
+            <input id="name-input" type="text" maxlength="40" placeholder="Όνομα μαθητή" autocomplete="name">
+          </label>
+          <label class="auth-field" for="email-input">
+            <span>Email</span>
+            <input id="email-input" type="email" maxlength="80" placeholder="student@example.com" autocomplete="email" required>
+          </label>
+          <button id="auth-submit" type="submit">Σύνδεση</button>
+          <p id="auth-message" class="auth-message" aria-live="polite"></p>
+        </form>
+      </div>
     </header>
 
     <main class="layout">
