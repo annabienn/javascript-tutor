@@ -41,6 +41,10 @@
             <span>Email</span>
             <input id="email-input" type="email" maxlength="80" placeholder="student@example.com" autocomplete="email" required>
           </label>
+          <label class="auth-field" for="password-input">
+            <span>Κωδικός</span>
+            <input id="password-input" type="password" minlength="6" maxlength="80" placeholder="Τουλάχιστον 6 χαρακτήρες" autocomplete="current-password" required>
+          </label>
           <button id="auth-submit" type="submit">Σύνδεση</button>
           <p id="auth-message" class="auth-message" aria-live="polite"></p>
         </form>
@@ -126,12 +130,14 @@
         const nameField = document.getElementById("name-field");
         const nameInput = document.getElementById("name-input");
         const emailInput = document.getElementById("email-input");
+        const passwordInput = document.getElementById("password-input");
         form.hidden = false;
         modeInput.value = mode;
         title.textContent = mode === "register" ? "Εγγραφή μαθητή" : "Είσοδος μαθητή";
         submit.textContent = mode === "register" ? "Δημιουργία λογαριασμού" : "Σύνδεση";
         nameField.hidden = mode !== "register";
         nameInput.required = mode === "register";
+        passwordInput.autocomplete = mode === "register" ? "new-password" : "current-password";
         (mode === "register" ? nameInput : emailInput).focus();
       };
     </script>

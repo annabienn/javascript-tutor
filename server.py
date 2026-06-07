@@ -1,7 +1,10 @@
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
+import hashlib
+import hmac
 import json
+import secrets
 import sqlite3
 import time
 
@@ -34,6 +37,19 @@ def read_json(handler):
         return {}
     raw = handler.rfile.read(length).decode("utf-8")
     return json.loads(raw or "{}")
+
+
+def hash_password(password, salt=None):
+    salt = salt or secrets.token_hex(16)
+    digest = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt.encode("utf-8"), 120_000)
+    return digest.hex(), salt
+
+
+def verify_password(password, stored_hash, salt):
+    if not stored_hash or not salt:
+        return False
+    candidate_hash, _ = hash_password(password, salt)
+    return hmac.compare_digest(candidate_hash, stored_hash)
 
 
 def module_score(conn, user_id, module_id):
@@ -300,24 +316,52 @@ class AppHandler(SimpleHTTPRequestHandler):
             mode = (payload.get("mode") or "register").strip().lower()
             name = (payload.get("name") or "Μαθητής").strip()
             email = (payload.get("email") or "").strip().lower() or None
+            password = payload.get("password") or ""
+            if not email:
+                json_response(self, {"error": "Email is required"}, 400)
+                return
+            if len(password) < 6:
+                json_response(self, {"error": "Password must be at least 6 characters"}, 400)
+                return
             with db() as conn:
-                if email:
-                    existing = conn.execute(
-                        "SELECT id, name, email FROM users WHERE email = ?",
-                        (email,),
-                    ).fetchone()
-                    if existing:
-                        json_response(self, dict(existing))
+                existing = conn.execute(
+                    "SELECT id, name, email, password_hash, password_salt FROM users WHERE email = ?",
+                    (email,),
+                ).fetchone()
+                if mode == "login":
+                    if not existing:
+                        json_response(self, {"error": "User not found"}, 404)
                         return
+                    if not verify_password(password, existing["password_hash"], existing["password_salt"]):
+                        json_response(self, {"error": "Wrong password"}, 401)
+                        return
+                    json_response(
+                        self,
+                        {"id": existing["id"], "name": existing["name"], "email": existing["email"]},
+                    )
+                    return
+                if existing:
+                    if existing["password_hash"]:
+                        json_response(self, {"error": "Email already exists"}, 409)
+                        return
+                    password_hash, password_salt = hash_password(password)
+                    conn.execute(
+                        "UPDATE users SET name = ?, password_hash = ?, password_salt = ? WHERE id = ?",
+                        (name, password_hash, password_salt, existing["id"]),
+                    )
+                    conn.commit()
+                    json_response(self, {"id": existing["id"], "name": name, "email": existing["email"]})
+                    return
                 if mode == "login":
                     json_response(self, {"error": "User not found"}, 404)
                     return
-                if mode == "register" and not email:
-                    json_response(self, {"error": "Email is required"}, 400)
-                    return
+                password_hash, password_salt = hash_password(password)
                 cur = conn.execute(
-                    "INSERT INTO users(name, email, created_at) VALUES (?, ?, ?)",
-                    (name, email, int(time.time())),
+                    """
+                    INSERT INTO users(name, email, password_hash, password_salt, created_at)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (name, email, password_hash, password_salt, int(time.time())),
                 )
                 conn.commit()
                 json_response(self, {"id": cur.lastrowid, "name": name, "email": email})

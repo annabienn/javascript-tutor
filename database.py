@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     email TEXT UNIQUE,
+    password_hash TEXT,
+    password_salt TEXT,
     created_at INTEGER NOT NULL
 );
 
@@ -66,5 +68,9 @@ def init_db():
         columns = [row[1] for row in conn.execute("PRAGMA table_info(users)").fetchall()]
         if "email" not in columns:
             conn.execute("ALTER TABLE users ADD COLUMN email TEXT")
+        if "password_hash" not in columns:
+            conn.execute("ALTER TABLE users ADD COLUMN password_hash TEXT")
+        if "password_salt" not in columns:
+            conn.execute("ALTER TABLE users ADD COLUMN password_salt TEXT")
         conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email)")
         conn.commit()

@@ -22,6 +22,7 @@ const el = {
   userForm: document.querySelector("#user-form"),
   nameInput: document.querySelector("#name-input"),
   emailInput: document.querySelector("#email-input"),
+  passwordInput: document.querySelector("#password-input"),
   loginOpen: document.querySelector("#login-open"),
   registerOpen: document.querySelector("#register-open"),
   authActions: document.querySelector("#auth-actions"),
@@ -74,6 +75,7 @@ function openAuth(mode) {
   el.authSubmit.textContent = mode === "register" ? "Δημιουργία λογαριασμού" : "Σύνδεση";
   el.nameField.hidden = mode !== "register";
   el.nameInput.required = mode === "register";
+  el.passwordInput.autocomplete = mode === "register" ? "new-password" : "current-password";
   if (mode === "register") {
     el.nameInput.focus();
   } else {
@@ -426,20 +428,27 @@ el.userForm.addEventListener("submit", async (event) => {
   el.authMessage.textContent = "";
   const name = el.nameInput.value.trim() || "Μαθητής";
   const email = el.emailInput.value.trim();
+  const password = el.passwordInput.value;
   state.authMode = el.authModeInput.value || state.authMode;
   try {
     state.user = await api("/api/users", {
       method: "POST",
-      body: JSON.stringify({ mode: state.authMode, name, email }),
+      body: JSON.stringify({ mode: state.authMode, name, email, password }),
     });
+    el.passwordInput.value = "";
     localStorage.setItem("jsTutorUser", JSON.stringify(state.user));
     renderAuthState();
     await loadContent();
   } catch (error) {
-    el.authMessage.textContent =
-      state.authMode === "login" && error.status === 404
-        ? "Δεν βρέθηκε χρήστης με αυτό το email. Κάνε πρώτα εγγραφή."
-        : "Δεν ολοκληρώθηκε η σύνδεση. Έλεγξε τα στοιχεία και δοκίμασε ξανά.";
+    if (state.authMode === "login" && error.status === 404) {
+      el.authMessage.textContent = "Δεν βρέθηκε χρήστης με αυτό το email. Κάνε πρώτα εγγραφή.";
+    } else if (state.authMode === "login" && error.status === 401) {
+      el.authMessage.textContent = "Λάθος κωδικός. Δοκίμασε ξανά.";
+    } else if (state.authMode === "register" && error.status === 409) {
+      el.authMessage.textContent = "Υπάρχει ήδη λογαριασμός με αυτό το email. Κάνε είσοδο.";
+    } else {
+      el.authMessage.textContent = "Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.";
+    }
   }
 });
 
