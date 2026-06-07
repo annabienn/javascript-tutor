@@ -1,11 +1,6 @@
 function storedUser() {
-  try {
-    const user = JSON.parse(localStorage.getItem("jsTutorUser") || "null");
-    return user && user.id ? user : null;
-  } catch (error) {
-    localStorage.removeItem("jsTutorUser");
-    return null;
-  }
+  localStorage.removeItem("jsTutorUser");
+  return null;
 }
 
 let state = {
@@ -482,7 +477,6 @@ el.userForm.addEventListener("submit", async (event) => {
       body: JSON.stringify({ mode: state.authMode, name, email, password }),
     });
     el.passwordInput.value = "";
-    localStorage.setItem("jsTutorUser", JSON.stringify(state.user));
     renderAuthState();
     await loadContent();
   } catch (error) {
