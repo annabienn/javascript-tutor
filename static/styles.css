@@ -541,6 +541,11 @@ textarea {
 .preview-card p {
   color: var(--muted);
   font-size: 14px;
+  display: -webkit-box;
+  min-height: 68px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .preview-card div {

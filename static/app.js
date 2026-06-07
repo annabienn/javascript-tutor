@@ -113,20 +113,20 @@ function renderAuthState() {
 
 function renderLandingPreview() {
   el.landingPreview.innerHTML = state.modules
-    .map(
-      (module, index) => `
+    .map((module, index) => {
+      const summary = module.content?.[0]?.body || module.goal;
+      return `
         <article class="preview-card">
           <span>${String(index + 1).padStart(2, "0")}</span>
           <h3>${module.title}</h3>
-          <p>${module.goal}</p>
+          <p>${summary}</p>
           <div>
             <small>${module.level}</small>
             <small>${module.estimated_minutes}'</small>
-            <small>${(module.activities || []).length} δραστηριότητες</small>
           </div>
         </article>
-      `,
-    )
+      `;
+    })
     .join("");
 }
 
