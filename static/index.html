@@ -18,8 +18,8 @@
 
       <div class="auth-shell">
         <div id="auth-actions" class="auth-actions">
-          <button id="login-open" type="button" class="ghost-button">Είσοδος</button>
-          <button id="register-open" type="button">Εγγραφή</button>
+          <button id="login-open" type="button" class="ghost-button" onclick="window.showAuthFallback && window.showAuthFallback('login')">Είσοδος</button>
+          <button id="register-open" type="button" onclick="window.showAuthFallback && window.showAuthFallback('register')">Εγγραφή</button>
         </div>
 
         <div id="auth-user" class="auth-user" hidden>
@@ -28,9 +28,10 @@
         </div>
 
         <form id="user-form" class="auth-panel" hidden>
+          <input id="auth-mode-input" type="hidden" value="login">
           <div class="auth-panel-head">
             <strong id="auth-title">Είσοδος</strong>
-            <button id="auth-close" type="button" class="icon-button" aria-label="Κλείσιμο">×</button>
+            <button id="auth-close" type="button" class="icon-button" aria-label="Κλείσιμο" onclick="document.getElementById('user-form').hidden = true">×</button>
           </div>
           <label id="name-field" class="auth-field" for="name-input">
             <span>Όνομα</span>
@@ -116,6 +117,24 @@
       </section>
     </main>
 
+    <script>
+      window.showAuthFallback = function(mode) {
+        const form = document.getElementById("user-form");
+        const modeInput = document.getElementById("auth-mode-input");
+        const title = document.getElementById("auth-title");
+        const submit = document.getElementById("auth-submit");
+        const nameField = document.getElementById("name-field");
+        const nameInput = document.getElementById("name-input");
+        const emailInput = document.getElementById("email-input");
+        form.hidden = false;
+        modeInput.value = mode;
+        title.textContent = mode === "register" ? "Εγγραφή μαθητή" : "Είσοδος μαθητή";
+        submit.textContent = mode === "register" ? "Δημιουργία λογαριασμού" : "Σύνδεση";
+        nameField.hidden = mode !== "register";
+        nameInput.required = mode === "register";
+        (mode === "register" ? nameInput : emailInput).focus();
+      };
+    </script>
     <script src="/app.js"></script>
   </body>
 </html>

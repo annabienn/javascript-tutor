@@ -1,5 +1,15 @@
+function storedUser() {
+  try {
+    const user = JSON.parse(localStorage.getItem("jsTutorUser") || "null");
+    return user && user.id ? user : null;
+  } catch (error) {
+    localStorage.removeItem("jsTutorUser");
+    return null;
+  }
+}
+
 let state = {
-  user: JSON.parse(localStorage.getItem("jsTutorUser") || "null"),
+  user: storedUser(),
   modules: [],
   adaptivePath: [],
   activeModuleId: "intro",
@@ -22,6 +32,7 @@ const el = {
   authClose: document.querySelector("#auth-close"),
   authSubmit: document.querySelector("#auth-submit"),
   authMessage: document.querySelector("#auth-message"),
+  authModeInput: document.querySelector("#auth-mode-input"),
   nameField: document.querySelector("#name-field"),
   moduleSelect: document.querySelector("#module-select"),
   moduleSummary: document.querySelector("#module-summary"),
@@ -56,6 +67,7 @@ async function api(path, options = {}) {
 
 function openAuth(mode) {
   state.authMode = mode;
+  el.authModeInput.value = mode;
   el.userForm.hidden = false;
   el.authMessage.textContent = "";
   el.authTitle.textContent = mode === "register" ? "Εγγραφή μαθητή" : "Είσοδος μαθητή";
@@ -68,6 +80,8 @@ function openAuth(mode) {
     el.emailInput.focus();
   }
 }
+
+window.openAuthPanel = openAuth;
 
 function closeAuth() {
   el.userForm.hidden = true;
@@ -412,6 +426,7 @@ el.userForm.addEventListener("submit", async (event) => {
   el.authMessage.textContent = "";
   const name = el.nameInput.value.trim() || "Μαθητής";
   const email = el.emailInput.value.trim();
+  state.authMode = el.authModeInput.value || state.authMode;
   try {
     state.user = await api("/api/users", {
       method: "POST",
@@ -428,8 +443,14 @@ el.userForm.addEventListener("submit", async (event) => {
   }
 });
 
-el.loginOpen.addEventListener("click", () => openAuth("login"));
-el.registerOpen.addEventListener("click", () => openAuth("register"));
+document.addEventListener("click", (event) => {
+  if (event.target.closest("#login-open")) {
+    openAuth("login");
+  }
+  if (event.target.closest("#register-open")) {
+    openAuth("register");
+  }
+});
 el.authClose.addEventListener("click", closeAuth);
 
 el.logoutBtn.addEventListener("click", async () => {
