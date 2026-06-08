@@ -8,15 +8,15 @@
   </head>
   <body>
     <section id="auth-page" class="auth-page">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">JS</div>
-        <div>
-          <p class="eyebrow">Εκπαιδευτικό Λογισμικό</p>
-          <h1>JavaScript Tutor</h1>
+      <div class="auth-card">
+        <div class="brand auth-brand">
+          <div class="brand-mark" aria-hidden="true">JS</div>
+          <div>
+            <p class="eyebrow">Εκπαιδευτικό Λογισμικό</p>
+            <h1>JavaScript Tutor</h1>
+          </div>
         </div>
-      </div>
 
-      <div class="auth-entry">
         <div class="auth-intro">
           <p class="section-kicker">JavaScript Learning Platform</p>
           <h2>Μπες στον προσωπικό σου χώρο μάθησης</h2>
@@ -51,20 +51,20 @@
           <button id="auth-submit" type="submit">Σύνδεση</button>
           <p id="auth-message" class="auth-message" aria-live="polite"></p>
         </form>
-      </div>
 
-      <div class="auth-preview">
-        <div class="preview-head">
-          <div>
-            <p class="section-kicker">Preview μαθημάτων</p>
-            <h2>Η διαδρομή που θα ακολουθήσεις</h2>
-          </div>
-          <span>Μια γρήγορη εικόνα των ενοτήτων πριν μπεις στο προσωπικό περιβάλλον μάθησης.</span>
-        </div>
-        <div id="landing-preview" class="landing-preview"></div>
+        <details class="auth-preview preview-menu">
+          <summary>
+            <span>
+              <small class="section-kicker">Preview μαθημάτων</small>
+              <strong>Δες τη διαδρομή πριν συνδεθείς</strong>
+            </span>
+            <em>Άνοιγμα μενού</em>
+          </summary>
+          <div id="landing-preview" class="landing-preview"></div>
+        </details>
       </div>
     </section>
 
-    <script src="/auth.js"></script>
+    <script src="/auth.js?v=20260608-centered-login"></script>
   </body>
 </html>

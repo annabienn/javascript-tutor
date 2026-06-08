@@ -30,6 +30,8 @@ async function api(path, options = {}) {
 function openAuth(mode) {
   authEl.modeInput.value = mode;
   authEl.message.textContent = "";
+  authEl.loginOpen.classList.toggle("active-auth-mode", mode === "login");
+  authEl.registerOpen.classList.toggle("active-auth-mode", mode === "register");
   authEl.title.textContent = mode === "register" ? "Εγγραφή μαθητή" : "Είσοδος μαθητή";
   authEl.submit.textContent = mode === "register" ? "Δημιουργία λογαριασμού" : "Σύνδεση";
   authEl.nameField.hidden = mode !== "register";

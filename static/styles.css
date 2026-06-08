@@ -236,19 +236,32 @@ textarea {
 
 .auth-page {
   display: grid;
-  width: min(1220px, calc(100% - 40px));
-  margin: 24px auto 44px;
-  gap: 22px;
+  min-height: 100vh;
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  padding: 36px 20px;
+  place-items: center;
 }
 
-.auth-page > .brand {
-  width: fit-content;
-  padding: 18px;
+.auth-card {
+  display: grid;
+  width: min(100%, 720px);
+  gap: 18px;
+  padding: 28px;
   border: 1px solid rgba(255, 255, 255, 0.78);
   border-radius: 8px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(248, 252, 255, 0.84));
-  box-shadow: var(--shadow-soft);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(246, 252, 255, 0.90)),
+    #ffffff;
+  box-shadow: var(--shadow);
+  animation: riseIn 0.45s ease both;
   backdrop-filter: blur(12px);
+}
+
+.auth-brand {
+  justify-content: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(217, 226, 236, 0.82);
 }
 
 .auth-entry {
@@ -265,15 +278,21 @@ textarea {
   backdrop-filter: blur(12px);
 }
 
+.auth-card .auth-intro {
+  text-align: center;
+}
+
 .auth-intro h2 {
-  max-width: 720px;
-  margin-bottom: 12px;
-  font-size: 36px;
-  line-height: 1.1;
+  max-width: 620px;
+  margin: 0 auto 12px;
+  font-size: 30px;
+  line-height: 1.12;
 }
 
 .auth-intro p {
-  max-width: 680px;
+  max-width: 620px;
+  margin-left: auto;
+  margin-right: auto;
   color: var(--muted);
   font-size: 17px;
 }
@@ -290,6 +309,21 @@ textarea {
 .auth-entry .auth-actions {
   grid-column: 1;
   justify-content: flex-start;
+}
+
+.auth-card .auth-actions {
+  justify-content: center;
+}
+
+.auth-card .auth-actions button {
+  min-width: 132px;
+}
+
+.auth-actions button.active-auth-mode {
+  border-color: var(--primary-dark);
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(23, 107, 135, 0.2);
 }
 
 .ghost-button {
@@ -340,20 +374,63 @@ textarea {
 
 .auth-panel-page {
   position: static;
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  width: 100%;
-  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.14);
+  width: min(100%, 460px);
+  margin: 0 auto;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.12);
 }
 
 .auth-preview {
   display: grid;
   gap: 14px;
-  padding: 18px;
+  padding: 14px;
   border: 1px solid rgba(217, 226, 236, 0.78);
   border-radius: 8px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(244, 250, 252, 0.52));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.preview-menu {
+  width: min(100%, 560px);
+  margin: 0 auto;
+}
+
+.preview-menu summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 58px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.preview-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.preview-menu summary span {
+  display: grid;
+  gap: 2px;
+}
+
+.preview-menu summary strong {
+  font-size: 17px;
+}
+
+.preview-menu summary em {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.preview-menu[open] summary {
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(217, 226, 236, 0.9);
 }
 
 .auth-panel[hidden],
@@ -506,15 +583,15 @@ textarea {
 
 .landing-preview {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 
 .preview-card {
   position: relative;
-  min-height: 210px;
+  min-height: 0;
   overflow: hidden;
-  padding: 18px;
+  padding: 14px 14px 14px 18px;
   border: 1px solid rgba(217, 226, 236, 0.92);
   border-radius: 8px;
   background:
@@ -543,7 +620,7 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .preview-card-top > span {
@@ -565,16 +642,17 @@ textarea {
 }
 
 .preview-card h3 {
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   color: var(--text);
   line-height: 1.25;
 }
 
 .preview-card p {
+  margin-bottom: 0;
   color: var(--muted);
   font-size: 14px;
   display: -webkit-box;
-  min-height: 68px;
+  min-height: 0;
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
@@ -591,7 +669,7 @@ textarea {
 .preview-progress {
   height: 7px;
   overflow: hidden;
-  margin-top: 18px;
+  margin-top: 12px;
   border-radius: 999px;
   background: rgba(217, 226, 236, 0.72);
 }
@@ -1158,6 +1236,48 @@ textarea {
   color: #344154;
 }
 
+.extended-theory {
+  margin: 0 0 24px;
+  padding: 20px;
+  border: 1px solid rgba(217, 226, 236, 0.92);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 252, 255, 0.86)),
+    #ffffff;
+  box-shadow: var(--shadow-soft);
+}
+
+.theory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.theory-card {
+  padding: 16px;
+  border: 1px solid rgba(217, 226, 236, 0.92);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fbfdff, #f4f9fb);
+}
+
+.theory-card span {
+  display: inline-flex;
+  margin-bottom: 10px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.theory-card h4 {
+  margin-bottom: 8px;
+  color: var(--primary-dark);
+}
+
+.theory-card p {
+  margin-bottom: 0;
+  color: #344154;
+}
+
 .practice-panel,
 .project-card {
   margin: 22px 0;
@@ -1424,7 +1544,8 @@ pre {
   .lesson-map,
   .project-card,
   .guide-strip,
-  .study-note-grid {
+  .study-note-grid,
+  .theory-grid {
     grid-template-columns: 1fr;
   }
 
