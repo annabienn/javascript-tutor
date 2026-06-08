@@ -237,17 +237,18 @@ textarea {
 .auth-page {
   display: grid;
   min-height: 100vh;
-  width: min(100%, 1180px);
+  width: 100%;
   margin: 0 auto;
-  padding: 36px 20px;
+  padding: 40px 20px;
   place-items: center;
 }
 
 .auth-card {
   display: grid;
   width: min(100%, 720px);
+  margin: auto;
   gap: 18px;
-  padding: 28px;
+  padding: 30px;
   border: 1px solid rgba(255, 255, 255, 0.78);
   border-radius: 8px;
   background:
@@ -260,8 +261,10 @@ textarea {
 
 .auth-brand {
   justify-content: center;
+  width: 100%;
   padding-bottom: 16px;
   border-bottom: 1px solid rgba(217, 226, 236, 0.82);
+  text-align: left;
 }
 
 .auth-entry {
@@ -312,6 +315,7 @@ textarea {
 }
 
 .auth-card .auth-actions {
+  width: auto;
   justify-content: center;
 }
 
