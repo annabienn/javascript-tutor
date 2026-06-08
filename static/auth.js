@@ -74,7 +74,7 @@ authEl.form.addEventListener("submit", async (event) => {
       body: JSON.stringify({ mode, name, email, password }),
     });
     sessionStorage.setItem("jsTutorUser", JSON.stringify(user));
-    window.location.href = "/app.html";
+    window.location.href = "/app.html?v=20260608";
   } catch (error) {
     if (mode === "login" && error.status === 404) {
       authEl.message.textContent = "Δεν βρέθηκε χρήστης με αυτό το email. Κάνε πρώτα εγγραφή.";
