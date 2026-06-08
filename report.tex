@@ -1,0 +1,392 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{listings}
+
+\setmainlanguage{greek}
+\setotherlanguage{english}
+\newcommand{\textlatin}[1]{\textenglish{#1}}
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+\setmonofont{Consolas}
+
+\geometry{margin=2.35cm}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
+
+\definecolor{codebg}{HTML}{F4F7FB}
+\definecolor{codeframe}{HTML}{D9E1EE}
+\definecolor{accent}{HTML}{176B87}
+
+\lstdefinestyle{codestyle}{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{codeframe},
+  showstringspaces=false,
+  columns=fullflexible
+}
+\lstset{style=codestyle}
+
+\title{\textbf{Εκπαιδευτικό Λογισμικό για την Εκμάθηση JavaScript}\\
+\large Αναφορά Ανάλυσης, Σχεδιασμού και Υλοποίησης}
+\author{
+ΑΝΝΑ ΧΕΛΕΝΑ ΜΠΙΕΝ -- ΑΜ: Π22107\\
+ΜΑΡΙΑ ΜΙΤΣΟΓΛΟΥ -- ΑΜ: Π22229
+}
+\date{Ακαδημαϊκό έτος 2025--2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\textbf{Θέμα 2: Εκπαιδευτικό Λογισμικό για την Εκμάθηση μιας Γλώσσας Προγραμματισμού}
+\end{center}
+
+\tableofcontents
+\newpage
+
+\section{Εισαγωγή}
+
+Η εφαρμογή \textlatin{JavaScript Tutor} αποτελεί εκπαιδευτικό λογισμικό για την εκμάθηση της γλώσσας προγραμματισμού \textlatin{JavaScript}. Στόχος της είναι να καθοδηγήσει έναν αρχάριο χρήστη μέσα από οργανωμένες ενότητες θεωρίας, παραδείγματα κώδικα, δραστηριότητες εξάσκησης, quiz αυτοαξιολόγησης και αναφορές προόδου.
+
+Η εργασία υλοποιήθηκε ως τοπική διαδικτυακή εφαρμογή με \textlatin{Python}, \textlatin{SQLite}, \textlatin{HTML}, \textlatin{CSS} και \textlatin{JavaScript}. Δεν βασίζεται σε έτοιμες πλατφόρμες τύπου \textlatin{Moodle}, ούτε σε no-code περιβάλλοντα. Ο server, τα endpoints, η βάση δεδομένων, το εκπαιδευτικό περιεχόμενο, η διεπαφή και οι μηχανισμοί προόδου έχουν υλοποιηθεί προγραμματιστικά.
+
+\section{Σκοπός της εφαρμογής}
+
+Ο βασικός σκοπός της εφαρμογής είναι να υποστηρίξει τη σταδιακή μάθηση της \textlatin{JavaScript}. Ο χρήστης δεν βλέπει απλώς θεωρία, αλλά ακολουθεί μία ολοκληρωμένη μαθησιακή διαδρομή:
+
+\begin{itemize}[leftmargin=1.2cm]
+  \item διαβάζει εκπαιδευτικό υλικό ανά ενότητα,
+  \item βλέπει παραδείγματα κώδικα,
+  \item εκτελεί δραστηριότητες κατανόησης,
+  \item απαντά σε quiz αυτοαξιολόγησης,
+  \item λαμβάνει άμεση ανατροφοδότηση,
+  \item βλέπει αναφορές προόδου και στατιστικά,
+  \item λαμβάνει προσαρμοσμένες προτάσεις μάθησης.
+\end{itemize}
+
+Η εφαρμογή δίνει έμφαση στην ενεργή συμμετοχή του μαθητή. Για τον λόγο αυτό, οι απαντήσεις, οι προσπάθειες και η συνολική πρόοδος αποθηκεύονται ανά συνδεδεμένο χρήστη.
+
+\section{Ομάδα στόχος}
+
+Η εφαρμογή απευθύνεται σε αρχάριους μαθητές ή φοιτητές που θέλουν να μάθουν βασικές και μεσαίες έννοιες της \textlatin{JavaScript}. Η δυσκολία των ενοτήτων αυξάνεται σταδιακά, ξεκινώντας από την εισαγωγή στη γλώσσα και καταλήγοντας σε πιο σύνθετες τεχνικές, όπως \textlatin{DOM}, \textlatin{events}, ασύγχρονη λογική, \textlatin{fetch}, \textlatin{modules} και debugging.
+
+\section{Τεχνολογίες υλοποίησης}
+
+\begin{longtable}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Τεχνολογία} & \textbf{Ρόλος στην εφαρμογή} \\
+\hline
+\textlatin{Python} & Υλοποίηση του τοπικού \textlatin{HTTP server} και των \textlatin{API endpoints}. \\
+\hline
+\textlatin{SQLite} & Τοπική βάση δεδομένων για χρήστες, πρόοδο, quiz, απαντήσεις και δραστηριότητες. \\
+\hline
+\textlatin{HTML} & Δομή της διεπαφής χρήστη. \\
+\hline
+\textlatin{CSS} & Οπτική μορφοποίηση, responsive διάταξη, panels, κάρτες, animations και κλειδωμένες καταστάσεις. \\
+\hline
+\textlatin{JavaScript} & Δυναμική φόρτωση περιεχομένου, χειρισμός quiz, δραστηριοτήτων, login/register και αναφορών. \\
+\hline
+\end{longtable}
+
+\section{Βασικές λειτουργίες}
+
+\subsection{Αρχική σελίδα και preview μαθημάτων}
+
+Με το άνοιγμα της εφαρμογής εμφανίζεται αρχική σελίδα με preview των μαθημάτων και συνοπτική παρουσίαση των δυνατοτήτων της πλατφόρμας. Ο χρήστης μπορεί να δει τι περιλαμβάνει το μάθημα, χωρίς όμως να μπορεί να εκτελέσει quiz ή να υποβάλει δραστηριότητες πριν συνδεθεί.
+
+Η αρχική σελίδα περιλαμβάνει:
+
+\begin{itemize}[leftmargin=1.2cm]
+  \item σύντομη περιγραφή της εφαρμογής,
+  \item κουμπιά \textbf{Εγγραφή} και \textbf{Είσοδος},
+  \item preview των ενοτήτων,
+  \item ενημέρωση ότι η πλήρης πρόσβαση απαιτεί σύνδεση.
+\end{itemize}
+
+Με αυτόν τον τρόπο η εφαρμογή λειτουργεί πιο ρεαλιστικά, καθώς πρώτα παρουσιάζει το εκπαιδευτικό προϊόν και έπειτα οδηγεί τον χρήστη στη σύνδεση.
+
+\subsection{Εγγραφή και είσοδος χρήστη}
+
+Η εφαρμογή υποστηρίζει σύστημα εγγραφής και εισόδου. Κατά την εγγραφή ο χρήστης δίνει:
+
+\begin{itemize}[leftmargin=1.2cm]
+  \item όνομα,
+  \item email,
+  \item κωδικό πρόσβασης.
+\end{itemize}
+
+Κατά την είσοδο ο χρήστης δίνει email και κωδικό. Η εφαρμογή ελέγχει αν υπάρχει ο χρήστης στη βάση και αν ο κωδικός είναι σωστός.
+
+Για λόγους ασφάλειας, ο πραγματικός κωδικός δεν αποθηκεύεται στη βάση δεδομένων. Αποθηκεύονται μόνο \textlatin{password\_hash} και \textlatin{password\_salt}, τα οποία παράγονται με \textlatin{PBKDF2-HMAC-SHA256}. Έτσι, ακόμη και αν κάποιος δει τη βάση, δεν μπορεί να διαβάσει τον αρχικό κωδικό.
+
+\subsection{Κλείδωμα quiz και δραστηριοτήτων χωρίς σύνδεση}
+
+Χωρίς σύνδεση, η εφαρμογή δεν επιτρέπει:
+
+\begin{itemize}[leftmargin=1.2cm]
+  \item υποβολή quiz,
+  \item καταγραφή απαντήσεων,
+  \item υποβολή δραστηριοτήτων,
+  \item εμφάνιση προσωπικών στατιστικών.
+\end{itemize}
+
+Αν ο χρήστης δεν είναι συνδεδεμένος, η περιοχή των quiz εμφανίζει μήνυμα ότι απαιτείται είσοδος ή εγγραφή. Οι δραστηριότητες επίσης εμφανίζονται σε κλειδωμένη μορφή. Αυτό είναι σημαντικό, επειδή η πρόοδος πρέπει να συνδέεται με συγκεκριμένο χρήστη.
+
+\subsection{Εκπαιδευτικές ενότητες}
+
+Το εκπαιδευτικό υλικό οργανώνεται σε επτά διακριτές ενότητες. Κάθε ενότητα περιλαμβάνει στόχο, θεωρία, παραδείγματα, όρους-κλειδιά, δραστηριότητες και quiz.
+
+\begin{enumerate}[leftmargin=1.2cm]
+  \item Εισαγωγή στη \textlatin{JavaScript}
+  \item Μεταβλητές, τύποι και συνθήκες
+  \item Συναρτήσεις και οργάνωση κώδικα
+  \item Πίνακες, αντικείμενα και επαναλήψεις
+  \item \textlatin{DOM} και γεγονότα
+  \item Ασύγχρονη \textlatin{JavaScript} και \textlatin{APIs}
+  \item Σύγχρονες τεχνικές, \textlatin{modules} και debugging
+\end{enumerate}
+
+Οι ενότητες έχουν σχεδιαστεί ώστε να ακολουθούν φυσική μαθησιακή κλιμάκωση. Πρώτα παρουσιάζονται οι βασικές έννοιες και στη συνέχεια εισάγονται πιο σύνθετα θέματα.
+
+\subsection{Quiz αυτοαξιολόγησης}
+
+Κάθε ενότητα διαθέτει quiz αυτοαξιολόγησης. Τα quiz περιλαμβάνουν ερωτήσεις πολλαπλής επιλογής, hints και αναλυτική ανατροφοδότηση μετά την υποβολή.
+
+Η εφαρμογή καταγράφει:
+
+\begin{itemize}[leftmargin=1.2cm]
+  \item ποιος χρήστης απάντησε,
+  \item σε ποια ενότητα ανήκει το quiz,
+  \item πόσες σωστές απαντήσεις δόθηκαν,
+  \item ποιες ήταν οι λανθασμένες απαντήσεις,
+  \item πόσος χρόνος χρειάστηκε.
+\end{itemize}
+
+Εκτός από τα quiz ενοτήτων υπάρχει και επαναληπτικό quiz, το οποίο συνδυάζει ερωτήσεις από περισσότερες ενότητες.
+
+\subsection{Δραστηριότητες εξάσκησης}
+
+Οι δραστηριότητες ζητούν από τον χρήστη να δώσει σύντομη απάντηση, να αναλύσει κώδικα ή να συμπληρώσει μία λειτουργία. Η εφαρμογή ελέγχει αν η απάντηση περιέχει βασικούς όρους ή στοιχεία που απαιτούνται από την άσκηση. Το αποτέλεσμα αποθηκεύεται στη βάση δεδομένων και χρησιμοποιείται στις αναφορές δυσκολίας.
+
+\subsection{Αναφορές και στατιστικά προόδου}
+
+Μετά τη σύνδεση, η εφαρμογή παρουσιάζει προσωπικά στατιστικά για τον χρήστη:
+
+\begin{itemize}[leftmargin=1.2cm]
+  \item μέση επίδοση,
+  \item αριθμό προσπαθειών,
+  \item αριθμό δραστηριοτήτων,
+  \item ολοκληρωμένες ενότητες,
+  \item χρόνο μελέτης,
+  \item πρόσφατες προσπάθειες,
+  \item συχνότερα λάθη,
+  \item σημεία δυσκολίας.
+\end{itemize}
+
+Τα στοιχεία αυτά καλύπτουν την απαίτηση της εργασίας για αποθήκευση στατιστικών και παρουσίαση αναφορών προόδου.
+
+\section{Προσαρμοσμένη μάθηση}
+
+Η εφαρμογή υλοποιεί βασικό μηχανισμό προσαρμοσμένης μάθησης. Για κάθε ενότητα ελέγχεται η τελευταία επίδοση του χρήστη στο αντίστοιχο quiz και δημιουργείται πρόταση:
+
+\begin{longtable}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Επίδοση} & \textbf{Προσαρμοσμένη ενέργεια} \\
+\hline
+Χωρίς προσπάθεια & Πρόταση για έναρξη ή συνέχιση μελέτης. \\
+\hline
+Κάτω από 60\% & Πρόταση επανάληψης και ενισχυτικό υλικό. \\
+\hline
+60\% έως 84\% & Πρόταση συνέχισης στην επόμενη ενότητα. \\
+\hline
+85\% και πάνω & Πρόταση για πιο απαιτητική πρόκληση ή εμβάθυνση. \\
+\hline
+\end{longtable}
+
+Η προσαρμογή αυτή βασίζεται σε πραγματικά αποθηκευμένα δεδομένα και όχι σε προσωρινή κατάσταση του browser.
+
+\section{Σχεδιασμός βάσης δεδομένων}
+
+Η βάση δεδομένων είναι αρχείο \textlatin{SQLite} με όνομα \textlatin{learning\_progress.sqlite3}. Οι χρήστες και η πρόοδός τους αποθηκεύονται τοπικά σε αυτό το αρχείο.
+
+\begin{longtable}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Πίνακας} & \textbf{Περιγραφή} \\
+\hline
+\textlatin{users} & Αποθηκεύει όνομα, email, hash κωδικού, salt και χρόνο δημιουργίας χρήστη. \\
+\hline
+\textlatin{module\_progress} & Αποθηκεύει επισκέψεις, χρόνο μελέτης και τελευταία επίσκεψη ανά χρήστη και ενότητα. \\
+\hline
+\textlatin{quiz\_attempts} & Αποθηκεύει κάθε προσπάθεια quiz, σκορ, σύνολο ερωτήσεων, τύπο quiz και χρόνο. \\
+\hline
+\textlatin{quiz\_answers} & Αποθηκεύει τις επιμέρους απαντήσεις κάθε προσπάθειας και αν ήταν σωστές. \\
+\hline
+\textlatin{activity\_attempts} & Αποθηκεύει απαντήσεις δραστηριοτήτων, matched terms και αν η προσπάθεια ήταν επιτυχής. \\
+\hline
+\end{longtable}
+
+\subsection{Ενδεικτικό σχήμα}
+
+\begin{lstlisting}[language=SQL]
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE,
+    password_hash TEXT,
+    password_salt TEXT,
+    created_at INTEGER NOT NULL
+);
+
+CREATE TABLE quiz_attempts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    module_id TEXT NOT NULL,
+    quiz_type TEXT NOT NULL,
+    score INTEGER NOT NULL,
+    total INTEGER NOT NULL,
+    time_seconds INTEGER NOT NULL,
+    created_at INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+\end{lstlisting}
+
+\section{Αρχιτεκτονική εφαρμογής}
+
+Η εφαρμογή έχει απλή αρχιτεκτονική τριών επιπέδων:
+
+\begin{itemize}[leftmargin=1.2cm]
+  \item \textbf{Frontend}: \textlatin{static/index.html}, \textlatin{static/styles.css}, \textlatin{static/app.js}.
+  \item \textbf{Application logic}: \textlatin{server.py}, το οποίο παρέχει τα \textlatin{API endpoints}.
+  \item \textbf{Data layer}: \textlatin{database.py} και \textlatin{learning\_progress.sqlite3}.
+\end{itemize}
+
+\subsection{Κύρια αρχεία}
+
+\begin{longtable}{|p{5cm}|p{9cm}|}
+\hline
+\textbf{Αρχείο} & \textbf{Ρόλος} \\
+\hline
+\textlatin{server.py} & Εκκίνηση server, authentication, quiz submission, δραστηριότητες, αναφορές και adaptive path. \\
+\hline
+\textlatin{database.py} & Δημιουργία και ενημέρωση σχήματος SQLite. \\
+\hline
+\textlatin{content.py} & Συγκεντρώνει το εκπαιδευτικό περιεχόμενο και τις ερωτήσεις. \\
+\hline
+\textlatin{curriculum/modules.py} & Περιλαμβάνει τις αναλυτικές εκπαιδευτικές ενότητες. \\
+\hline
+\textlatin{curriculum/questions.py} & Περιλαμβάνει τις ερωτήσεις των quiz. \\
+\hline
+\textlatin{static/index.html} & Δομή σελίδας, αρχική οθόνη, auth panel και βασική περιοχή εφαρμογής. \\
+\hline
+\textlatin{static/styles.css} & Εμφάνιση, responsive layout, animations, landing page και locked states. \\
+\hline
+\textlatin{static/app.js} & Χειρισμός UI, API calls, login/register, quiz, δραστηριότητες και αναφορές. \\
+\hline
+\end{longtable}
+
+\section{API endpoints}
+
+\begin{longtable}{|p{4cm}|p{3cm}|p{7cm}|}
+\hline
+\textbf{Endpoint} & \textbf{Μέθοδος} & \textbf{Ρόλος} \\
+\hline
+\textlatin{/api/content} & \textlatin{GET} & Επιστρέφει ενότητες, επαναληπτικό quiz και προσαρμοσμένη διαδρομή. \\
+\hline
+\textlatin{/api/users} & \textlatin{POST} & Υλοποιεί εγγραφή και είσοδο χρήστη με email και κωδικό. \\
+\hline
+\textlatin{/api/quiz/<id>} & \textlatin{GET} & Επιστρέφει ερωτήσεις quiz χωρίς τη σωστή απάντηση. \\
+\hline
+\textlatin{/api/quiz/submit} & \textlatin{POST} & Αξιολογεί απαντήσεις και αποθηκεύει προσπάθεια quiz. \\
+\hline
+\textlatin{/api/visit} & \textlatin{POST} & Καταγράφει επίσκεψη και χρόνο μελέτης ανά ενότητα. \\
+\hline
+\textlatin{/api/activity/submit} & \textlatin{POST} & Αποθηκεύει απάντηση δραστηριότητας και επιτυχία. \\
+\hline
+\textlatin{/api/report} & \textlatin{GET} & Επιστρέφει αναφορά προόδου χρήστη. \\
+\hline
+\end{longtable}
+
+\section{Σενάρια χρήσης}
+
+\subsection{Σενάριο 1: Πρώτη επίσκεψη}
+
+Ο χρήστης ανοίγει την εφαρμογή και βλέπει την αρχική σελίδα με preview των μαθημάτων. Μπορεί να ενημερωθεί για τη δομή και τις δυνατότητες, αλλά δεν μπορεί να κάνει quiz ή δραστηριότητες χωρίς σύνδεση.
+
+\subsection{Σενάριο 2: Εγγραφή}
+
+Ο χρήστης επιλέγει \textbf{Εγγραφή}, συμπληρώνει όνομα, email και κωδικό. Ο server δημιουργεί νέο χρήστη στη βάση και αποθηκεύει hash του κωδικού.
+
+\subsection{Σενάριο 3: Είσοδος}
+
+Ο χρήστης επιλέγει \textbf{Είσοδος}, δίνει email και κωδικό. Αν τα στοιχεία είναι σωστά, η εφαρμογή φορτώνει την προσωπική του πρόοδο.
+
+\subsection{Σενάριο 4: Μελέτη και quiz}
+
+Ο συνδεδεμένος χρήστης επιλέγει ενότητα, μελετά το υλικό και απαντά στο quiz. Η προσπάθεια αποθηκεύεται και εμφανίζεται ανατροφοδότηση με σωστές και λανθασμένες απαντήσεις.
+
+\subsection{Σενάριο 5: Αναφορά προόδου}
+
+Μετά την ολοκλήρωση quiz ή δραστηριοτήτων, η εφαρμογή ενημερώνει τα στατιστικά. Ο χρήστης βλέπει επίδοση, χρόνο μελέτης, ολοκληρωμένες ενότητες και σημεία που χρειάζονται βελτίωση.
+
+\section{Κάλυψη απαιτήσεων εκφώνησης}
+
+\begin{longtable}{|p{5cm}|p{9cm}|}
+\hline
+\textbf{Απαίτηση} & \textbf{Κάλυψη στην υλοποίηση} \\
+\hline
+Προγραμματιστική υλοποίηση & Υλοποίηση με \textlatin{Python}, \textlatin{SQLite}, \textlatin{HTML}, \textlatin{CSS}, \textlatin{JavaScript}. \\
+\hline
+Τουλάχιστον τρεις ενότητες & Υπάρχουν επτά ενότητες JavaScript. \\
+\hline
+Θεωρητικό υλικό και παραδείγματα & Κάθε ενότητα έχει θεωρία, παραδείγματα κώδικα και όρους-κλειδιά. \\
+\hline
+Quiz και δραστηριότητες & Υπάρχουν quiz ανά ενότητα, επαναληπτικό quiz και δραστηριότητες εξάσκησης. \\
+\hline
+Αποθήκευση προόδου & Η πρόοδος αποθηκεύεται στη βάση SQLite ανά χρήστη. \\
+\hline
+Στατιστικά και αναφορές & Υπάρχει panel αναφορών με επιδόσεις, προσπάθειες, χρόνο, λάθη και δυσκολίες. \\
+\hline
+Προσαρμοσμένη μάθηση & Η εφαρμογή προτείνει επανάληψη, συνέχιση ή πρόκληση ανάλογα με την επίδοση. \\
+\hline
+Ολοκληρωμένη υλοποίηση & Υπάρχει αρχική σελίδα, authentication, gated quizzes, UI, βάση, API, αναφορές και οδηγίες εκτέλεσης. \\
+\hline
+\end{longtable}
+
+\section{Οδηγίες εκτέλεσης}
+
+Για την εκτέλεση της εφαρμογής απαιτείται εγκατεστημένη \textlatin{Python}. Από τον φάκελο του project εκτελείται:
+
+\begin{lstlisting}
+python server.py
+\end{lstlisting}
+
+Στη συνέχεια ο χρήστης ανοίγει στον browser:
+
+\begin{lstlisting}
+http://127.0.0.1:8000
+\end{lstlisting}
+
+Σε Windows μπορεί να χρησιμοποιηθεί και το αρχείο:
+
+\begin{lstlisting}
+run_windows.bat
+\end{lstlisting}
+
+\section{Συμπεράσματα}
+
+Το \textlatin{JavaScript Tutor} καλύπτει τις βασικές απαιτήσεις του Θέματος 2, καθώς αποτελεί ολοκληρωμένο εκπαιδευτικό λογισμικό με θεωρία, παραδείγματα, quiz, δραστηριότητες, εγγραφή/είσοδο χρηστών, αποθήκευση προόδου και προσαρμοσμένη μάθηση. Η εφαρμογή είναι οργανωμένη σε διακριτά αρχεία, χρησιμοποιεί βάση δεδομένων για μόνιμη αποθήκευση και προσφέρει καθαρή διεπαφή με αρχική σελίδα preview και κλειδωμένες λειτουργίες μέχρι τη σύνδεση.
+
+\end{document}

@@ -1,6 +1,11 @@
 function storedUser() {
-  localStorage.removeItem("jsTutorUser");
-  return null;
+  try {
+    const user = JSON.parse(sessionStorage.getItem("jsTutorUser") || "null");
+    return user && user.id ? user : null;
+  } catch (error) {
+    sessionStorage.removeItem("jsTutorUser");
+    return null;
+  }
 }
 
 let state = {
@@ -14,25 +19,11 @@ let state = {
 };
 
 const el = {
-  userForm: document.querySelector("#user-form"),
-  nameInput: document.querySelector("#name-input"),
-  emailInput: document.querySelector("#email-input"),
-  passwordInput: document.querySelector("#password-input"),
-  authPage: document.querySelector("#auth-page"),
-  landingPreview: document.querySelector("#landing-preview"),
   appTopbar: document.querySelector("#app-topbar"),
   appLayout: document.querySelector("#app-layout"),
-  loginOpen: document.querySelector("#login-open"),
-  registerOpen: document.querySelector("#register-open"),
-  authActions: document.querySelector("#auth-actions"),
   authUser: document.querySelector("#auth-user"),
   authUserLabel: document.querySelector("#auth-user-label"),
   logoutBtn: document.querySelector("#logout-btn"),
-  authTitle: document.querySelector("#auth-title"),
-  authSubmit: document.querySelector("#auth-submit"),
-  authMessage: document.querySelector("#auth-message"),
-  authModeInput: document.querySelector("#auth-mode-input"),
-  nameField: document.querySelector("#name-field"),
   moduleSelect: document.querySelector("#module-select"),
   moduleSummary: document.querySelector("#module-summary"),
   lesson: document.querySelector("#lesson"),
@@ -64,65 +55,9 @@ async function api(path, options = {}) {
   return response.json();
 }
 
-function openAuth(mode) {
-  state.authMode = mode;
-  el.authModeInput.value = mode;
-  el.userForm.hidden = false;
-  el.authMessage.textContent = "";
-  el.authTitle.textContent = mode === "register" ? "Εγγραφή μαθητή" : "Είσοδος μαθητή";
-  el.authSubmit.textContent = mode === "register" ? "Δημιουργία λογαριασμού" : "Σύνδεση";
-  el.nameField.hidden = mode !== "register";
-  el.nameInput.required = mode === "register";
-  el.passwordInput.autocomplete = mode === "register" ? "new-password" : "current-password";
-  if (mode === "register") {
-    el.nameInput.focus();
-  } else {
-    el.emailInput.focus();
-  }
-}
-
-window.openAuthPanel = openAuth;
-
-function closeAuth() {
-  el.userForm.hidden = true;
-  el.authMessage.textContent = "";
-}
-
 function renderAuthState() {
-  const loggedIn = Boolean(state.user);
-  el.authActions.hidden = loggedIn;
-  el.authUser.hidden = !loggedIn;
-  el.authPage.hidden = loggedIn;
-  el.appTopbar.hidden = !loggedIn;
-  el.appLayout.hidden = !loggedIn;
-  if (loggedIn) {
-    const email = state.user.email ? ` · ${state.user.email}` : "";
-    el.authUserLabel.textContent = `Συνδεδεμένος: ${state.user.name}${email}`;
-    closeAuth();
-    return;
-  }
-  el.authUserLabel.textContent = "";
-  el.userForm.hidden = false;
-  openAuth("login");
-}
-
-function renderLandingPreview() {
-  el.landingPreview.innerHTML = state.modules
-    .map((module, index) => {
-      const summary = module.content?.[0]?.body || module.goal;
-      return `
-        <article class="preview-card">
-          <span>${String(index + 1).padStart(2, "0")}</span>
-          <h3>${module.title}</h3>
-          <p>${summary}</p>
-          <div>
-            <small>${module.level}</small>
-            <small>${module.estimated_minutes}'</small>
-          </div>
-        </article>
-      `;
-    })
-    .join("");
+  const email = state.user.email ? ` · ${state.user.email}` : "";
+  el.authUserLabel.textContent = `Συνδεδεμένος: ${state.user.name}${email}`;
 }
 
 function moduleStatus(moduleId) {
@@ -134,7 +69,6 @@ async function loadContent() {
   const data = await api(`/api/content${userParam}`);
   state.modules = data.modules;
   state.adaptivePath = data.adaptive_path;
-  renderLandingPreview();
   renderModuleSelect();
   renderLesson();
   await loadQuiz("module");
@@ -464,49 +398,11 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
-el.userForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  el.authMessage.textContent = "";
-  const name = el.nameInput.value.trim() || "Μαθητής";
-  const email = el.emailInput.value.trim();
-  const password = el.passwordInput.value;
-  state.authMode = el.authModeInput.value || state.authMode;
-  try {
-    state.user = await api("/api/users", {
-      method: "POST",
-      body: JSON.stringify({ mode: state.authMode, name, email, password }),
-    });
-    el.passwordInput.value = "";
-    renderAuthState();
-    await loadContent();
-  } catch (error) {
-    if (state.authMode === "login" && error.status === 404) {
-      el.authMessage.textContent = "Δεν βρέθηκε χρήστης με αυτό το email. Κάνε πρώτα εγγραφή.";
-    } else if (state.authMode === "login" && error.status === 401) {
-      el.authMessage.textContent = "Λάθος κωδικός. Δοκίμασε ξανά.";
-    } else if (state.authMode === "register" && error.status === 409) {
-      el.authMessage.textContent = "Υπάρχει ήδη λογαριασμός με αυτό το email. Κάνε είσοδο.";
-    } else {
-      el.authMessage.textContent = "Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.";
-    }
-  }
-});
-
-document.addEventListener("click", (event) => {
-  if (event.target.closest("#login-open")) {
-    openAuth("login");
-  }
-  if (event.target.closest("#register-open")) {
-    openAuth("register");
-  }
-});
-
 el.logoutBtn.addEventListener("click", async () => {
   await saveVisit();
-  localStorage.removeItem("jsTutorUser");
+  sessionStorage.removeItem("jsTutorUser");
   state.user = null;
-  renderAuthState();
-  await loadContent();
+  window.location.href = "/";
 });
 
 el.quizForm.addEventListener("submit", async (event) => {
@@ -604,13 +500,11 @@ el.lesson.addEventListener("click", async (event) => {
   }
 });
 
-if (state.user) {
-  el.nameInput.value = state.user.name;
-  el.emailInput.value = state.user.email || "";
+if (!state.user) {
+  window.location.href = "/";
+} else {
+  renderAuthState();
+  loadContent().catch((error) => {
+    el.lesson.innerHTML = `<p>Σφάλμα φόρτωσης: ${error.message}</p>`;
+  });
 }
-
-renderAuthState();
-
-loadContent().catch((error) => {
-  el.lesson.innerHTML = `<p>Σφάλμα φόρτωσης: ${error.message}</p>`;
-});

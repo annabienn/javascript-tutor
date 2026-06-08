@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>JavaScript Tutor</title>
+    <title>JavaScript Tutor - Είσοδος</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
@@ -27,8 +27,8 @@
         </div>
 
         <div id="auth-actions" class="auth-actions">
-          <button id="login-open" type="button" class="ghost-button" onclick="window.showAuthFallback && window.showAuthFallback('login')">Είσοδος</button>
-          <button id="register-open" type="button" onclick="window.showAuthFallback && window.showAuthFallback('register')">Εγγραφή</button>
+          <button id="login-open" type="button" class="ghost-button">Είσοδος</button>
+          <button id="register-open" type="button">Εγγραφή</button>
         </div>
 
         <form id="user-form" class="auth-panel auth-panel-page">
@@ -65,111 +65,6 @@
       </div>
     </section>
 
-    <header id="app-topbar" class="topbar" hidden>
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">JS</div>
-        <div>
-          <p class="eyebrow">Εκπαιδευτικό Λογισμικό</p>
-          <h1>JavaScript Tutor</h1>
-        </div>
-      </div>
-
-      <div id="auth-user" class="auth-user" hidden>
-        <span id="auth-user-label"></span>
-        <button id="logout-btn" type="button" class="ghost-button">Αποσύνδεση</button>
-      </div>
-    </header>
-
-    <main id="app-layout" class="layout" hidden>
-      <aside class="sidebar">
-        <section class="panel path-panel">
-          <div class="panel-title">
-            <span class="panel-icon" aria-hidden="true">1</span>
-            <h2>Μαθησιακή διαδρομή</h2>
-          </div>
-          <div id="path-list" class="path-list"></div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-title">
-            <span class="panel-icon" aria-hidden="true">%</span>
-            <h2>Αναφορές</h2>
-          </div>
-          <div class="stat-grid">
-            <div>
-              <span id="average-score">0%</span>
-              <small>Μέση επίδοση</small>
-            </div>
-            <div>
-              <span id="attempt-count">0</span>
-              <small>Προσπάθειες</small>
-            </div>
-            <div>
-              <span id="activity-count">0</span>
-              <small>Δραστηριότητες</small>
-            </div>
-            <div>
-              <span id="completed-count">0/7</span>
-              <small>Ολοκληρωμένες</small>
-            </div>
-            <div>
-              <span id="study-time">0'</span>
-              <small>Χρόνος</small>
-            </div>
-          </div>
-          <div id="report-bars" class="report-bars"></div>
-          <div id="report-details" class="report-details"></div>
-        </section>
-      </aside>
-
-      <section class="workspace">
-        <section class="course-nav" aria-label="Πλοήγηση μαθημάτων">
-          <div>
-            <p class="section-kicker">Course Navigator</p>
-            <h2>Επιλογή ενότητας</h2>
-            <p id="module-summary" class="module-summary"></p>
-          </div>
-          <div class="module-select-wrap">
-            <label class="sr-only" for="module-select">Επιλογή ενότητας</label>
-            <select id="module-select" class="module-select"></select>
-          </div>
-        </section>
-        <article id="lesson" class="lesson"></article>
-
-        <section class="quiz-area">
-          <div class="quiz-head">
-            <div>
-              <p class="section-kicker">Αυτοαξιολόγηση</p>
-              <h2 id="quiz-title">Quiz ενότητας</h2>
-            </div>
-            <button id="review-btn" type="button">Επαναληπτικό Quiz</button>
-          </div>
-          <form id="quiz-form" class="quiz-form"></form>
-          <div id="quiz-result" class="quiz-result" aria-live="polite"></div>
-        </section>
-      </section>
-    </main>
-
-    <script>
-      window.showAuthFallback = function(mode) {
-        const form = document.getElementById("user-form");
-        const modeInput = document.getElementById("auth-mode-input");
-        const title = document.getElementById("auth-title");
-        const submit = document.getElementById("auth-submit");
-        const nameField = document.getElementById("name-field");
-        const nameInput = document.getElementById("name-input");
-        const emailInput = document.getElementById("email-input");
-        const passwordInput = document.getElementById("password-input");
-        form.hidden = false;
-        modeInput.value = mode;
-        title.textContent = mode === "register" ? "Εγγραφή μαθητή" : "Είσοδος μαθητή";
-        submit.textContent = mode === "register" ? "Δημιουργία λογαριασμού" : "Σύνδεση";
-        nameField.hidden = mode !== "register";
-        nameInput.required = mode === "register";
-        passwordInput.autocomplete = mode === "register" ? "new-password" : "current-password";
-        (mode === "register" ? nameInput : emailInput).focus();
-      };
-    </script>
-    <script src="/app.js"></script>
+    <script src="/auth.js"></script>
   </body>
 </html>
