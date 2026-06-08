@@ -288,6 +288,41 @@ function renderLesson() {
   const practiceHtml = (module.practice_tasks || [])
     .map((task) => `<li>${task}</li>`)
     .join("");
+  const exerciseModesHtml = (module.exercise_modes || [])
+    .map(
+      (item, index) => `
+        <article class="exercise-mode">
+          <div class="exercise-mode-top">
+            <span>${String(index + 1).padStart(2, "0")}</span>
+            <strong>${item.type}</strong>
+          </div>
+          <h4>${item.title}</h4>
+          <p>${item.task}</p>
+          <dl>
+            <div>
+              <dt>Κριτήριο</dt>
+              <dd>${item.criteria}</dd>
+            </div>
+            <div>
+              <dt>Ενδεικτική απάντηση</dt>
+              <dd>${item.solution}</dd>
+            </div>
+          </dl>
+        </article>
+      `,
+    )
+    .join("");
+  const assessmentPlanHtml = (module.assessment_plan || [])
+    .map(
+      (item) => `
+        <li>
+          <strong>${item.stage}</strong>
+          <span>${item.method}</span>
+          <small>${item.purpose}</small>
+        </li>
+      `,
+    )
+    .join("");
   const projectHtml = module.mini_project
     ? `
       <section class="project-card">
@@ -384,7 +419,23 @@ function renderLesson() {
       <h3>Πρακτική εξάσκηση</h3>
       <ul>${practiceHtml}</ul>
     </section>
+    <section class="exercise-modes">
+      <div class="study-depth-head">
+        <p class="section-kicker">Διαφορετικές μορφές εξάσκησης</p>
+        <h3>Πρακτική πριν από την αξιολόγηση</h3>
+        <p>Κάθε ενότητα περιλαμβάνει διαφορετικό τύπο εργασίας, ώστε ο χρήστης να μην κάνει μόνο quiz αλλά να σκέφτεται, να διορθώνει, να σχεδιάζει και να εφαρμόζει.</p>
+      </div>
+      <div class="exercise-mode-grid">${exerciseModesHtml}</div>
+    </section>
     ${projectHtml}
+    <section class="assessment-roadmap">
+      <div>
+        <p class="section-kicker">Αξιολόγηση</p>
+        <h3>Πώς ελέγχεται η πρόοδος στην ενότητα</h3>
+        <p>Η αξιολόγηση ξεκινά με κατανόηση, περνά σε πρακτική εφαρμογή και ολοκληρώνεται με quiz και προσαρμοσμένη πρόταση.</p>
+      </div>
+      <ol>${assessmentPlanHtml}</ol>
+    </section>
     <section class="activities">
       <h3>Δραστηριότητες εξάσκησης</h3>
       ${activitiesHtml}
