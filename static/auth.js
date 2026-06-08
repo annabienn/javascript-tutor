@@ -44,13 +44,16 @@ function renderPreview(modules) {
       const summary = module.content?.[0]?.body || module.goal;
       return `
         <article class="preview-card">
-          <span>${String(index + 1).padStart(2, "0")}</span>
+          <div class="preview-card-top">
+            <span>${String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <small>${module.level}</small>
+              <small>${module.estimated_minutes}'</small>
+            </div>
+          </div>
           <h3>${module.title}</h3>
           <p>${summary}</p>
-          <div>
-            <small>${module.level}</small>
-            <small>${module.estimated_minutes}'</small>
-          </div>
+          <div class="preview-progress" aria-hidden="true"><span style="width: ${Math.min(100, 22 + index * 11)}%"></span></div>
         </article>
       `;
     })
