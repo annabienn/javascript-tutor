@@ -44,6 +44,18 @@ REVIEW_QUIZ.extend([
     QUESTION_BANK["quality_project"][10],
 ])
 
+REVIEW_QUIZ.extend([
+    QUESTION_BANK["intro"][12],
+    QUESTION_BANK["basics"][13],
+    QUESTION_BANK["functions"][14],
+    QUESTION_BANK["arrays"][15],
+    QUESTION_BANK["objects"][12],
+    QUESTION_BANK["dom_async"][13],
+    QUESTION_BANK["debug_project"][14],
+    QUESTION_BANK["storage"][15],
+    QUESTION_BANK["quality_project"][12],
+])
+
 
 def get_module(module_id):
     return next((module for module in MODULES if module["id"] == module_id), None)
