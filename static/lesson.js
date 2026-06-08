@@ -551,10 +551,22 @@ function escapeHtml(value) {
 }
 
 el.logoutBtn.addEventListener("click", async () => {
-  await saveVisit();
+  const userBeforeLogout = state.user;
   sessionStorage.removeItem("jsTutorUser");
   state.user = null;
-  window.location.href = "/";
+
+  try {
+    if (userBeforeLogout) {
+      state.user = userBeforeLogout;
+      await saveVisit();
+    }
+  } catch (error) {
+    // Logout should always return the user to the login page, even if visit tracking fails.
+  } finally {
+    state.user = null;
+    sessionStorage.removeItem("jsTutorUser");
+    window.location.replace("/?v=logout");
+  }
 });
 
 el.quizForm.addEventListener("submit", async (event) => {
